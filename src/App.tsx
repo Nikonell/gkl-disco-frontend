@@ -9,7 +9,7 @@ function App() {
 			<GradientBackground />
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<SongRequestScreen />} />
+					<Route path="/*" element={<SongRequestScreen />} />
 				</Routes>
 			</BrowserRouter>
 		</>
