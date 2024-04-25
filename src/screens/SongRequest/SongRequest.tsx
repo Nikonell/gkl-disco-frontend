@@ -14,7 +14,7 @@ export const SongRequestScreen = () => {
     return <>
         <div className="w-full h-screen max-w-screen flex justify-center items-center">
             <Routes>
-                <Route path="/" element={<SelectSongLayout state={state} setState={setState} />} />
+                <Route path="/" element={<SelectSongLayout selectedSongId={state.selectedSongId} set={setState} />} />
             </Routes>
         </div>
     </>
