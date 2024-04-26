@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
 import { SelectSongLayout } from "./layouts/SelectSongLayout";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { SendRequestLayout } from "./layouts/SendRequestLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,20 +13,37 @@ export interface FoundTrack {
     explicit: boolean;
 }
 
+export interface SentRequest {
+    id: number;
+    created_at: string;
+    yandex_id: number;
+    song_name: string;
+    artist_names: string;
+    say_hello: boolean;
+    hello_from: string | null;
+    hello_to: string | null;
+    hello_text: string | null;
+    explicit_correct: boolean;
+    artist_correct: boolean;
+    expert_mark: boolean | null;
+}
+
 export interface SongRequestState {
     selectedSong: FoundTrack | null;
+    sentRequest: SentRequest | null;
 }
 
 export const SongRequestScreen = () => {
     const [state, setState] = useState<SongRequestState>({
         selectedSong: null,
+        sentRequest: null,
     });
 
     return <>
         <div className="w-full h-screen max-w-screen flex justify-center items-center">
             <Routes>
                 <Route path="/" element={<SelectSongLayout selectedSong={state.selectedSong} set={setState} />} />
-                <Route path="send" element={<SendRequestLayout selectedSong={state.selectedSong} />} />
+                <Route path="send" element={<SendRequestLayout selectedSong={state.selectedSong} set={setState} />} />
             </Routes>
         </div>
     </>

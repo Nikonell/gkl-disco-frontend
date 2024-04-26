@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FoundTrack } from "../SongRequest";
-import { useNavigate } from "react-router-dom";
+import { FoundTrack, SongRequestState } from "../SongRequest";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SendHorizonal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SongCard } from "../SongRequest";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,28 @@ interface SendRequestLayoutState {
     helloText: string | null;
 }
 
-export const SendRequestLayout = ({ selectedSong }: { selectedSong: FoundTrack | null }) => {
+const sendRequestHandler = async (selectedSong: FoundTrack | null, state: SendRequestLayoutState, set: Dispatch<SetStateAction<SongRequestState>>, navigate: NavigateFunction) => {
+    const res = await fetch("/api/song_requests", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            yandex_id: selectedSong?.id,
+            say_hello: state.sayHello,
+            hello_from: state.helloFrom,
+            hello_to: state.helloTo,
+            hello_text: state.helloText,
+        }),
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    console.log(data);
+    set(p => ({...p, sentRequest: data}));
+    navigate("/result");
+}
+
+export const SendRequestLayout = ({ selectedSong, set }: { selectedSong: FoundTrack | null, set: Dispatch<SetStateAction<SongRequestState>> }) => {
     const navigate = useNavigate();
     const [state, setState] = useState<SendRequestLayoutState>({
         sayHello: false,
@@ -63,7 +84,7 @@ export const SendRequestLayout = ({ selectedSong }: { selectedSong: FoundTrack |
                 </div>
             </CardContent>
             <CardFooter>
-                <Button className="w-full">
+                <Button className="w-full" onClick={() => sendRequestHandler(selectedSong, state, set, navigate)}>
                     Отправить
                     <SendHorizonal className="w-4 h-4 ml-2" />
                 </Button>
