@@ -8,6 +8,7 @@ import { SongCard } from "../SongRequest";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SendRequestLayoutState {
     sayHello: boolean;
@@ -16,7 +17,7 @@ interface SendRequestLayoutState {
     helloText: string | null;
 }
 
-const sendRequestHandler = async (selectedSong: FoundTrack | null, state: SendRequestLayoutState, set: Dispatch<SetStateAction<SongRequestState>>, navigate: NavigateFunction) => {
+const sendRequestHandler = async (selectedSong: FoundTrack | null, state: SendRequestLayoutState, set: Dispatch<SetStateAction<SongRequestState>>, navigate: NavigateFunction, toast: any) => {
     const res = await fetch("/api/song_requests", {
         method: "POST",
         headers: {
@@ -30,15 +31,19 @@ const sendRequestHandler = async (selectedSong: FoundTrack | null, state: SendRe
             hello_text: state.helloText,
         }),
     });
+    if (res.status === 409) {
+        toast({variant: "destructive", "title": "Песня уже заказана.", description: "Используйте другую песню."});
+        navigate("/");
+    } else if (!res.ok) toast({variant: "destructive", title: "Что-то пошло не так.", description: "Попробуйте ещё раз."});
     if (!res.ok) return;
     const data = await res.json();
-    console.log(data);
     set(p => ({...p, sentRequest: data}));
     navigate("/result");
 }
 
 export const SendRequestLayout = ({ selectedSong, set }: { selectedSong: FoundTrack | null, set: Dispatch<SetStateAction<SongRequestState>> }) => {
     const navigate = useNavigate();
+    const { toast } = useToast();
     const [state, setState] = useState<SendRequestLayoutState>({
         sayHello: false,
         helloFrom: null,
@@ -84,7 +89,7 @@ export const SendRequestLayout = ({ selectedSong, set }: { selectedSong: FoundTr
                 </div>
             </CardContent>
             <CardFooter>
-                <Button className="w-full" onClick={() => sendRequestHandler(selectedSong, state, set, navigate)}>
+                <Button className="w-full" onClick={() => sendRequestHandler(selectedSong, state, set, navigate, toast)}>
                     Отправить
                     <SendHorizonal className="w-4 h-4 ml-2" />
                 </Button>

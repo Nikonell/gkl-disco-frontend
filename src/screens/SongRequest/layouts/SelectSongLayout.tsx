@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ChevronRight, LoaderCircle, SearchIcon } from "lucide-react"
+import { ChevronRight, SearchIcon } from "lucide-react"
 import { FoundTrack, SongCard, SongCardSkeleton, SongRequestState } from "../SongRequest"
-import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useDebounceCallback } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 

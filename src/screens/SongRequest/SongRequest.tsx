@@ -4,6 +4,7 @@ import { MouseEventHandler, useState } from "react";
 import { SendRequestLayout } from "./layouts/SendRequestLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ResultLayout } from "./layouts/ResultLayout";
 
 export interface FoundTrack {
     id: number;
@@ -44,6 +45,7 @@ export const SongRequestScreen = () => {
             <Routes>
                 <Route path="/" element={<SelectSongLayout selectedSong={state.selectedSong} set={setState} />} />
                 <Route path="send" element={<SendRequestLayout selectedSong={state.selectedSong} set={setState} />} />
+                <Route path="result" element={<ResultLayout state={state} set={setState} />} />
             </Routes>
         </div>
     </>
